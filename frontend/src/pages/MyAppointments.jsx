@@ -139,7 +139,7 @@ const MyAppointments = () => {
     <div>
       
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>My Appointments</p>
-      <p className='text-xs text-gray-100'>2305 3242 5784 8228</p>
+      <p className='text-xs text-gray-100'>2305324257848228</p>
       <div>
         {appointments.map((item, index) => (
           <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b' key={index}>
