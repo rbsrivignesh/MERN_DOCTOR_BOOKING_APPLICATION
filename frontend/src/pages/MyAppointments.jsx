@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext'
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
 const MyAppointments = () => {
-  const { backendUrl, token,getDoctorsData } = useContext(AppContext);
+  const { backendUrl, token, getDoctorsData } = useContext(AppContext);
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const months = [
@@ -48,18 +48,18 @@ const MyAppointments = () => {
     }
   }
 
-  const cancelAppointment = async(appointmentId)=>{
+  const cancelAppointment = async (appointmentId) => {
     try {
       // console.log(appointmentId);
-      const {data} = await axios.post(backendUrl+"/api/user/cancel-appointment", {appointmentId}, {headers : {token}});
+      const { data } = await axios.post(backendUrl + "/api/user/cancel-appointment", { appointmentId }, { headers: { token } });
 
-      if(data.success){
-toast.success(data.message);
-getUserAppointments();
-getDoctorsData();
+      if (data.success) {
+        toast.success(data.message);
+        getUserAppointments();
+        getDoctorsData();
 
       }
-      else{
+      else {
         toast.error(data.message)
         console.log(data.message);
       }
@@ -80,31 +80,31 @@ getDoctorsData();
 
     }
   }, [token]);
-// 4386 2894 0766 0153	
-  const initPay = (order)=>{
+  // 4386 2894 0766 0153	
+  const initPay = (order) => {
     console.log(import.meta.env.VITE_RAZORPAY_KEY_ID);
     const options = {
-      key : import.meta.env.VITE_RAZORPAY_KEY_ID ,
-      amount : order.amount,
-      currency : order.currency,
-      name : 'Appointment Payment',
-      description : "Appointment Payment",
-      order_id : order.id,
-      receipt : order.receipt,
-      handler : async (response)=>{
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Appointment Payment',
+      description: "Appointment Payment",
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
 
         console.log(response);
         try {
-          const {data} = await axios.post(backendUrl+"/api/user/verify-razorpay", response,{headers : {token}});
-          if(data.success){
+          const { data } = await axios.post(backendUrl + "/api/user/verify-razorpay", response, { headers: { token } });
+          if (data.success) {
             getUserAppointments();
             navigate("/my-appointments")
-            
+
           }
 
         } catch (error) {
           console.log(error);
-           toast.error(error.message);
+          toast.error(error.message);
         }
 
       }
@@ -112,24 +112,24 @@ getDoctorsData();
     }
 
     const rzp = new window.Razorpay(options);
-    rzp.open ();
+    rzp.open();
   }
 
-  
 
-  const appointmentRazorpay = async(appointmentId)=>{
+
+  const appointmentRazorpay = async (appointmentId) => {
     try {
-      const {data} = await axios.post(backendUrl +"/api/user/payment-razorpay", {appointmentId}, {headers : {token}});
-      
-      if(data.success){
+      const { data } = await axios.post(backendUrl + "/api/user/payment-razorpay", { appointmentId }, { headers: { token } });
+
+      if (data.success) {
         initPay(data.order)
         console.log(data.order);
 
       }
-      else{
+      else {
         console.log(data.message);
       }
-     } catch (error) {
+    } catch (error) {
       console.log(error);
       toast.error(error.message);
 
@@ -137,7 +137,9 @@ getDoctorsData();
   }
   return (
     <div>
+      
       <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>My Appointments</p>
+      <p className='text-xs text-gray-100'>2305 3242 5784 8228</p>
       <div>
         {appointments.map((item, index) => (
           <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b' key={index}>
@@ -154,22 +156,22 @@ getDoctorsData();
             </div>
             <div></div>
             <div className='flex flex-col gap-2 justify-end'>
-             { !item.cancelled && !item.payment  && !item.isCompleted &&
-              <button onClick={()=> appointmentRazorpay(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>
-            } 
+              {!item.cancelled && !item.payment && !item.isCompleted &&
+                <button onClick={() => appointmentRazorpay(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>
+              }
 
-            {!item.cancelled && item.payment && !item.isCompleted  && <button className='sm:mi-w-48, py-2 border rounded text-stone-500 bg-indigo-50'>Paid</button>}
+              {!item.cancelled && item.payment && !item.isCompleted && <button className='sm:mi-w-48, py-2 border rounded text-stone-500 bg-indigo-50'>Paid</button>}
 
-              { !item.cancelled  && !item.isCompleted  && 
-              <button onClick={ ()=> cancelAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel Appointment</button>
-            }
-            {
-              item.cancelled && 
-              <button  className='sm:min-w-48 py-2 border border-red-500 rounded text-red-500'>Appointment Cancelled</button>
-            
-            }
+              {!item.cancelled && !item.isCompleted &&
+                <button onClick={() => cancelAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>Cancel Appointment</button>
+              }
+              {
+                item.cancelled &&
+                <button className='sm:min-w-48 py-2 border border-red-500 rounded text-red-500'>Appointment Cancelled</button>
 
-            {item.isCompleted && <button className='sm:min-w-48 py-2 border border-green-500 border text-green-500'>Completed</button>}
+              }
+
+              {item.isCompleted && <button className='sm:min-w-48 py-2 border border-green-500 border text-green-500'>Completed</button>}
             </div>
           </div>
         ))}
