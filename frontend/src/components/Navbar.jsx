@@ -3,6 +3,7 @@ import { assets } from '../assets/assets'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -11,7 +12,9 @@ const Navbar = () => {
     const [click, setClick] = useState(false);
     const logout = () => {
         localStorage.removeItem('token');
+       
         setToken(false);
+        setClick(false)
     }
     return (
         <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
@@ -40,12 +43,12 @@ const Navbar = () => {
                     token && userData ? <div className='flex items-center gap-2 cursor-pointer group relative'>
                         <img onClick={() => setClick(prev=> !prev)} className='w-8 rounded-full' src={userData.image} alt="" />
                         <img className='w-2.5' src={assets.dropdown_icon} alt="" />
-                        <div className>
+                        <div >
                             <div className={`absolute top-0 right-0 text-base font-medium text-gray-600 pt-14 z-20`}>
                                 {click && <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4'>
                                     <p onClick={() => { navigate("/my-profile"); setClick(false) }} className="hover:text-black cursor-pointer">My Profile</p>
                                     <p onClick={() => { navigate("/my-appointments"); setClick(false) }} className="hover:text-black cursor-pointer">My Appointments</p>
-                                    <p onClick={() => { logout; setClick(false) }} className="hover:text-black cursor-pointer">Logout</p>
+                                    <p onClick={()=> {logout()}} className="hover:text-black cursor-pointer">sLogout</p>
                                 </div> }
                                 
                             </div>

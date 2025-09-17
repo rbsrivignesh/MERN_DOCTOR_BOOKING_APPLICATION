@@ -28,6 +28,7 @@ const Appointment = () => {
   const bookAppointment = async()=>{
     if (!token){
       toast.warn("Login to Book Appointment");
+      scrollTo(0,0);
       return navigate("/login")
     }
     try {
